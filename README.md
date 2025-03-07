@@ -10,8 +10,8 @@
 ## 安装方法
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 扩展。
 2. 点击以下链接安装脚本：
-   [安装脚本](https://github.com/Xizicl/bilibili-remaining-time/blob/main/bilibili-remaining-time.user.js)
-3. 打开 Bilibili 视频页面，脚本会自动运行。
+   [安装脚本](https://xizicl.github.io/bilibili-remaining-time/bilibili-remaining-time.user.js)
+3. 刷新 Bilibili 视频页面，脚本会自动运行。
 
 ## 效果展示
 ![效果截图](https://github.com/Xizicl/bilibili-remaining-time/blob/main/collections_type.png)
