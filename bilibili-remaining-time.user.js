@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站选集剩余时长显示
 // @namespace    https://github.com/Xizicl/bilibili-remaining-time
-// @version      1.0.0
+// @version      1.3.0
 // @description  在B站视频页面显示从当前选集开始的剩余时长和总时长，并实时更新。
 // @author       Xizicl
 // @match        *://www.bilibili.com/video/*
@@ -43,9 +43,21 @@
     return `${hours.toString().padStart(2, '0')}小时${minutes.toString().padStart(2, '0')}分${secs.toString().padStart(2, '0')}秒`;
   };
 
-  // 3. 计算剩余时长和总时长
+  // 3. 获取选集列表
+  const getListItems = () => {
+    // 支持两种页面结构
+    const list1 = document.querySelectorAll('.video-pod__list.multip.list .simple-base-item');
+    const list2 = document.querySelectorAll('.rcmd-tab .video-pod__list .simple-base-item');
+    return list1.length > 0 ? list1 : list2;
+  };
+
+  // 4. 计算剩余时长和总时长
   const calculateTime = () => {
-    const listItems = document.querySelectorAll('.video-pod__list.multip.list .simple-base-item');
+    const listItems = getListItems();
+    if (listItems.length === 0) {
+      throw new Error('未找到选集列表');
+    }
+
     let remainingTime = 0;
     let totalDuration = 0;
     let foundCurrent = false;
@@ -71,7 +83,7 @@
     return { remainingTime, totalDuration };
   };
 
-  // 4. 更新显示内容
+  // 5. 更新显示内容
   const updateDisplay = () => {
     try {
       const { remainingTime, totalDuration } = calculateTime();
@@ -81,15 +93,14 @@
         <div style="margin-top: 8px; opacity: 0.8;">总时长 ${formatTime(totalDuration)}</div>
       `;
     } catch (e) {
-      console.error('[剩余时间插件] 错误:', e);
-      container.innerHTML = '插件加载失败，请刷新页面重试。';
+      container.innerHTML = '当前页面不支持选集剩余时长显示。';
     }
   };
 
-  // 5. 启动逻辑
+  // 6. 启动逻辑
   const init = () => {
     const checkElementsLoaded = () => {
-      const listItems = document.querySelectorAll('.video-pod__list.multip.list .simple-base-item');
+      const listItems = getListItems();
       const video = document.querySelector('video');
       return listItems.length > 0 && video !== null;
     };
@@ -106,7 +117,7 @@
     poll();
   };
 
-  // 6. 根据页面加载状态启动
+  // 7. 根据页面加载状态启动
   if (document.readyState === 'complete') {
     init();
   } else {
